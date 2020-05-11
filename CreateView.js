@@ -1,16 +1,20 @@
-import * as ActionSDK from 'actionSDK2';
 
-ActionSDK.APIs.actionViewDidLoad(true /*success*/);
+// Fetching HTML Elements in Variables by ID(outside).
+var root = document.getElementById("root");
+var questionCount = 0;
 
-// Fetching HTML Elements in Variables by ID.
 var root = document.getElementById("root");
 var bodyDiv = document.createElement("div");
 var footerDiv = document.createElement("div");
 var questionCount = 0;
-let questions: string[] = new Array();
+let questions = new Array();
+
 
 createBody();
+
 function createBody() {
+
+  ActionSDK.APIs.actionViewDidLoad(true /*success*/);
 
   root.appendChild(createInputElement("Survey title", "surveyTitle"));
   root.appendChild(bodyDiv);
@@ -38,7 +42,7 @@ function createBody() {
 
   submit.addEventListener("click", function () {
 
-    submitForm();
+   submitForm();
   });
 }
 
@@ -53,19 +57,19 @@ function createQuestionArray() {
 
 
   for (var i = 0; i < questionCount; i++) {
-    var val: string = (<HTMLInputElement>document.getElementById(i.toString())).value + "~1~0~SingleOption~" +
-      (<HTMLInputElement>document.getElementById(i + "0")).value + "~" + (<HTMLInputElement>document.getElementById(i + "1")).value;
+    var val = (document.getElementById(i.toString())).value + "~1~0~SingleOption~" +
+      (document.getElementById(i + "0")).value + "~" + (document.getElementById(i + "1")).value;
 
     questions.push(val);
   }
 }
 
-function sendActioninstance(surveyTitle: string, questions: string[]) {
+function sendActioninstance(surveyTitle, questions) {
 
   let actionInstance = getActionInstance(surveyTitle, questions);
 
   ActionSDK.APIs.getCurrentContext()
-    .then((context: ActionSDK.ActionContext) => {
+    .then((context) => {
       ActionSDK.ActionUtils.prepareActionInstance(actionInstance, context);
       let data = CreateViewData(actionInstance, surveyTitle);
       ActionSDK.APIs.createActionInstance(actionInstance, data);
@@ -73,7 +77,7 @@ function sendActioninstance(surveyTitle: string, questions: string[]) {
 
 }
 
-function CreateViewData(actionInstance: ActionSDK.ActionInstance, title: string) {
+function CreateViewData(actionInstance, title) {
   // let questions: string[] = new Array();
   // let columns: ActionSDK.ActionInstanceColumn[] = questions;
   // columns.forEach(column => {
@@ -108,17 +112,17 @@ function CreateViewData(actionInstance: ActionSDK.ActionInstance, title: string)
 }
 
 
-function getActionInstance(title: string, questions: string[]) {
+function getActionInstance(title, questions) {
 
 
-  let columnArray: ActionSDK.ActionInstanceColumn[] = [];
+  let columnArray = [];
 
   for (var i = 0; i < questionCount; i++) {
-    var val = (<HTMLInputElement>document.getElementById(i.toString())).value;// +"~1~0~SingleOption~"+
-    var choice1 = (<HTMLInputElement>document.getElementById(i + "0")).value;
-    var choice2 = (<HTMLInputElement>document.getElementById(i + "1")).value;
+    var val = (document.getElementById(i.toString())).value;// +"~1~0~SingleOption~"+
+    var choice1 = (document.getElementById(i + "0")).value;
+    var choice2 = (document.getElementById(i + "1")).value;
 
-    let col: ActionSDK.ActionInstanceColumn = {
+    let col = {
       id: i.toString(),
       type: ActionSDK.ActionInstanceColumnType.SingleOption,
       title: val,
@@ -132,12 +136,12 @@ function getActionInstance(title: string, questions: string[]) {
 
 
 
-    let op1: ActionSDK.ActionInstanceColumnOption = {
+    let op1 = {
       id: i + "0",
       title: choice1
 
     }
-    let op2: ActionSDK.ActionInstanceColumnOption = {
+    let op2 = {
       id: i + "1",
       title: choice1
 
@@ -152,7 +156,7 @@ function getActionInstance(title: string, questions: string[]) {
     columnArray.push(col);
   }
 
-  let actionInstance: ActionSDK.ActionInstance = {
+  let actionInstance = {
     title: title,
     expiry: ActionSDK.Utils.getDefaultExpiry(7).getTime(),
     columns: columnArray,
@@ -162,8 +166,7 @@ function getActionInstance(title: string, questions: string[]) {
   actionInstance.rowsVisibility = ActionSDK.Visibility.All;
 
   actionInstance.notificationSettings = [];
-  var notificationSettingsMode: ActionSDK.NotificationSettingMode;
-  notificationSettingsMode = ActionSDK.NotificationSettingMode.None;
+  var notificationSettingsMode = ActionSDK.NotificationSettingMode.None;
 
   actionInstance.notificationSettings.push({
     mode: notificationSettingsMode,
@@ -178,13 +181,13 @@ function getActionInstance(title: string, questions: string[]) {
 }
 
 function submitForm() {
-  var surveyTitle = (<HTMLInputElement>document.getElementById("surveyTitle")).value;
+  var surveyTitle = (document.getElementById("surveyTitle")).value;
   createQuestionArray();
   sendActioninstance(surveyTitle, questions);
 }
 
 
-function createInputElement(ph: string, id: string) {
+function createInputElement(ph, id) {
   var inputelement = document.createElement('input'); // Create Input Field for Name
   inputelement.setAttribute("type", "text");
   inputelement.setAttribute("id", id);
@@ -223,7 +226,7 @@ function addQuestion() {
 }
 
 
-function addChoice(ph: string, cc: string) {
+function addChoice(ph, cc) {
   var inputelement = document.createElement('input'); // Create Input Field for Name
   inputelement.setAttribute("type", "text");
   inputelement.setAttribute("value", "");

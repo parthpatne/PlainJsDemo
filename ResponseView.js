@@ -1,11 +1,10 @@
 
-import * as ActionSDK from 'actionSDK2';
 ActionSDK.APIs.actionViewDidLoad(true /*success*/);
 
 // Fetching HTML Elements in Variables by ID.
 var root = document.getElementById("root");
 let row = {};
-let actionInstance:  ActionSDK.ActionInstance = null;
+let actionInstance = null;
 
 initialize();
 
@@ -28,7 +27,7 @@ function createBody(){
 function submitForm() {
   
   //parth check how to get row and id 
-  let actionInstanceRow: ActionSDK.ActionInstanceRow = {
+  let actionInstanceRow = {
     id: "",
     isUpdate: false,
     row: row
@@ -38,7 +37,7 @@ function submitForm() {
 ActionSDK.Utils.announceText(ActionSDK.Localizer.getString("SubmittingResponse"));
         ActionSDK.ActionUtils.prepareActionInstanceRow(actionInstanceRow);
         ActionSDK.APIs.createOrUpdateActionInstanceRows(actionInstance.id, [actionInstanceRow])
-            .then((success: boolean) => {
+            .then((success) => {
                     ActionSDK.Utils.announceText(ActionSDK.Localizer.getString("Submitted"));
                     ActionSDK.APIs.dismissScreen();
                 
@@ -51,7 +50,7 @@ ActionSDK.Utils.announceText(ActionSDK.Localizer.getString("SubmittingResponse")
 function createQuestionView(){
 
   var count = 1;
-  actionInstance.columns.forEach((column: ActionSDK.ActionInstanceColumn) => {
+  actionInstance.columns.forEach((column) => {
     
           var qDiv = document.createElement("div");
 
@@ -63,7 +62,7 @@ function createQuestionView(){
           qDiv.appendChild(questionHeading);      
 
           //add radio button
-          column.options.forEach((option:ActionSDK.ActionInstanceColumnOption) => {
+          column.options.forEach((option) => {
            var radioOption = getRadioButton(option.title,column.id,option.id);
            qDiv.appendChild(radioOption);
            
@@ -78,11 +77,11 @@ function getRadioButton( text,name,id) {
 
     var oDiv = document.createElement("div");
     oDiv.id = id;
-	oDiv.setAttribute("columnId", name);
-	
-		oDiv.addEventListener("click", function () {
-		radiobuttonclick(this.id,this.getAttribute("columnId"));
-		});
+  oDiv.setAttribute("columnId", name);
+  
+    oDiv.addEventListener("click", function () {
+    radiobuttonclick(this.id,this.getAttribute("columnId"));
+    });
     var radiobox = document.createElement('input');
     radiobox.type = 'radio';
     radiobox.name = name;
@@ -107,9 +106,9 @@ function radiobuttonclick(optionId,colomnId){
 function initialize(){
 
     ActionSDK.APIs.getCurrentContext()
-    .then((context: ActionSDK.ActionContext) => {   
+    .then((context) => {   
       ActionSDK.APIs.getActionInstance(context.actionInstanceId)
-      .then((ai: ActionSDK.ActionInstance) => {
+      .then((ai) => {
       actionInstance = ai;
       createBody();
       })      

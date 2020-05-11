@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "outDir": "./output/",
-    "sourceMap": true,
-    "noImplicitAny": false,
-    "target": "es5"
-  }
-}

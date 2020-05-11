@@ -1,7 +1,7 @@
-{
-    "id": "com.microsoft.test.sunny",
-    "name": "Test Action Package",
-    "description": "Test Action Package",
+    {
+    "id": "com.microsoft.test.parth0511",
+    "name": "JS Parth0511",
+    "description": "parth0511",
     "provider": {
         "name": "Microsoft",
         "websiteUrl": "https://www.microsoft.com/",
@@ -9,22 +9,22 @@
         "termsOfUseUrl": "https://www.microsoft.com/app-tos"
     },
     "icon": "images/appIcon.png",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "views": {
         "CardView": {
             "sourceLocation": "json/cardView.json"
         },
         "LaunchView": {
             "sourceLocation": "html/createView.html",
-            "header": "Test Create View"
+            "header": "parth0511 Create View"
         },
         "UpdateView": {
             "sourceLocation": "html/updateView.html",
-            "header": "Test Update View"
+            "header": "parth0511 Update View"
         },
         "DetailView": {
             "sourceLocation": "html/detailView.html",
-            "header": "Test Detail View"
+            "header": "parth0511 Detail View"
         }
     },
     "localizationInfo": {

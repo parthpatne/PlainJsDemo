@@ -1,10 +1,9 @@
 
-import * as ActionSDK from 'actionSDK2';
 ActionSDK.APIs.actionViewDidLoad(true /*success*/);
 
 var root = document.getElementById("root");
-let actionInstance:  ActionSDK.ActionInstance = null;
-let actionSummary : ActionSDK.ActionInstanceSummary = null;
+let actionInstance = null;
+let actionSummary = null;
 
 initialize();
 
@@ -21,7 +20,7 @@ function createBody(){
 function createQuestionView(){
 
   var count = 1;
-  actionInstance.columns.forEach((column: ActionSDK.ActionInstanceColumn) => {
+  actionInstance.columns.forEach((column) => {
     
           var qDiv = document.createElement("div");
 
@@ -32,7 +31,7 @@ function createQuestionView(){
           questionHeading.innerHTML = count + "."+ column.title;
           qDiv.appendChild(questionHeading);      
 
-          column.options.forEach((option:ActionSDK.ActionInstanceColumnOption) => {
+          column.options.forEach((option) => {
            var optionView = getAggregateOptionView(option.title,option.id,column.id);
            qDiv.appendChild(optionView);
            
@@ -68,17 +67,17 @@ function getAggregateOptionView( title,optionId,columnId) {
 function initialize(){
 
     ActionSDK.APIs.getCurrentContext()
-    .then((context: ActionSDK.ActionContext) => {   
+    .then((context) => {   
       ActionSDK.APIs.getActionInstance(context.actionInstanceId)
-      .then((ai: ActionSDK.ActionInstance) => {
+      .then((ai) => {
       actionInstance = ai;
       ActionSDK.APIs.getActionInstanceSummary(actionInstance.id, false /* isShortSummary */)
-            .then((aggregatedSummary: ActionSDK.ActionInstanceSummary) => {
+            .then((aggregatedSummary) => {
               actionSummary = aggregatedSummary;
                 createBody();
             })
-            .catch((error: ActionSDK.ActionError) => {
-                
+            .catch((error) => {
+                console.log(error);
             });
       })      
     });
