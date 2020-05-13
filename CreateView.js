@@ -147,10 +147,6 @@ function getActionInstance(title, questions) {
 
     }
 
-
-    op1.id = i + "1";
-    op1.title = choice2;
-
     col.options.push(op1);
     col.options.push(op2);
     columnArray.push(col);
