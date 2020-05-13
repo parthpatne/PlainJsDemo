@@ -1,7 +1,7 @@
     {
-    "id": "com.microsoft.test.parth0511",
-    "name": "JS Parth0511",
-    "description": "parth0511",
+    "id": "com.microsoft.test.parth0513",
+    "name": "JS Demo Parth0513",
+    "description": "parth0513",
     "provider": {
         "name": "Microsoft",
         "websiteUrl": "https://www.microsoft.com/",
@@ -9,7 +9,7 @@
         "termsOfUseUrl": "https://www.microsoft.com/app-tos"
     },
     "icon": "images/appIcon.png",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "views": {
         "CardView": {
             "sourceLocation": "json/cardView.json"
