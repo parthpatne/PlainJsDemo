@@ -1,8 +1,5 @@
-
-// Fetching HTML Elements in Variables by ID(outside).
 var root = document.getElementById("root");
 var questionCount = 0;
-
 var root = document.getElementById("root");
 var bodyDiv = document.createElement("div");
 var footerDiv = document.createElement("div");
@@ -10,11 +7,9 @@ var questionCount = 0;
 let questions = new Array();
 
 
-createBody();
+function OnPageLoad() {
 
-function createBody() {
-
-  ActionSDK.APIs.actionViewDidLoad(true /*success*/);
+  // ActionSDK.APIs.actionViewDidLoad(true /*success*/);
 
   root.appendChild(createInputElement("Survey title", "surveyTitle"));
   root.appendChild(bodyDiv);
@@ -42,146 +37,66 @@ function createBody() {
 
   submit.addEventListener("click", function () {
 
-   submitForm();
+    submitFormNew();
   });
 }
 
-function createQuestionArray() {
-
-  /*
-    -Read question and choices value
-    -Read All Question values
-    -create HashMap for all question 
-        like: 0: "test~1~0~SingleOption~test~test"
-  */
-
+function getQuestionSet() {
 
   for (var i = 0; i < questionCount; i++) {
-    var val = (document.getElementById(i.toString())).value + "~1~0~SingleOption~" +
-      (document.getElementById(i + "0")).value + "~" + (document.getElementById(i + "1")).value;
-
+   var val = {
+        id: i.toString(),
+        title: (document.getElementById(i.toString())).value,
+        type: actionSDK.ActionDataFieldType.SingleOption,
+        allowNullValue: false,
+        options: [
+            {
+                id: i + "0",
+                title: (document.getElementById(i + "0")).value
+            },
+            {
+                id: i + "1",
+                title: (document.getElementById(i + "1")).value
+            }
+        ]
+    }
     questions.push(val);
   }
+
+  return questions;
 }
+  
+ 
 
-function sendActioninstance(surveyTitle, questions) {
+function createAction(actionPackageId) {
 
-  let actionInstance = getActionInstance(surveyTitle, questions);
-
-  ActionSDK.APIs.getCurrentContext()
-    .then((context) => {
-      ActionSDK.ActionUtils.prepareActionInstance(actionInstance, context);
-      let data = CreateViewData(actionInstance, surveyTitle);
-      ActionSDK.APIs.createActionInstance(actionInstance, data);
-    });
-
-}
-
-function CreateViewData(actionInstance, title) {
-  // let questions: string[] = new Array();
-  // let columns: ActionSDK.ActionInstanceColumn[] = questions;
-  // columns.forEach(column => {
-  //     let question: string;
-  //     question = column.title.replace("~", "\\~");
-  //     if (column.isOptional) {
-  //         question = question + "~1";
-  //     } else {
-  //         question = question + "~0";
-  //     }
-  //     // Adding question display type
-  //     let customProperties = JSON.parse(column.customProperties);
-  //     question = question.concat(`~${customProperties["dt"]}`);
-  //     question = question.concat(`~${column.type.toString()}`);
-  //     column.options.forEach(option => {
-  //         question = question + `~${option.title.replace("~", "\\~")}`;
-  //     });
-  //     if (questions != null)
-  //         questions.push(question);
-  // });
-
-  let surveyData = {
-    ti: title,
-    et: ActionSDK.Utils.getDefaultExpiry(7).getTime(),
-    ia: actionInstance.isAnonymous ? 1 : 0,
-    cl: questions,
-    ns: `${actionInstance.notificationSettings[0].mode}~${actionInstance.notificationSettings[0].time}`,
-    rv: 1,
-    mr: 0
+  var questionsSet = getQuestionSet();
+  var action = {
+      id: generateGUID(),
+      actionPackageId: actionPackageId,
+      version: 1,
+      title: (document.getElementById("surveyTitle")).value,
+      expiryTime: new Date().getTime() + (7 * 24 * 60 * 60 * 1000),
+      properties: [],
+      dataSets: [
+          {
+              id: "TestDataSet",
+              itemsVisibility: actionSDK.Visibility.All,
+              itemsEditable: false,
+              canUserAddMultipleItems: true,
+              dataFields: questionsSet
+          }
+      ]
   };
-  return surveyData;
+  var request = new actionSDK.CreateAction.Request(action);
+  actionSDK.executeApi(request)
+      .then(function (response) {
+          console.info("CreateAction - Response: " + JSON.stringify(response));
+      })
+      .catch(function (error) {
+          console.error("CreateAction - Error: " + JSON.stringify(error));
+      });
 }
-
-
-function getActionInstance(title, questions) {
-
-
-  let columnArray = [];
-
-  for (var i = 0; i < questionCount; i++) {
-    var val = (document.getElementById(i.toString())).value;// +"~1~0~SingleOption~"+
-    var choice1 = (document.getElementById(i + "0")).value;
-    var choice2 = (document.getElementById(i + "1")).value;
-
-    let col = {
-      id: i.toString(),
-      type: ActionSDK.ActionInstanceColumnType.SingleOption,
-      title: val,
-      isOptional: false,
-      options: []
-
-    }
-
-    col.isInvisible = false;
-    col.isExcludedFromReporting = true;
-
-
-
-    let op1 = {
-      id: i + "0",
-      title: choice1
-
-    }
-    let op2 = {
-      id: i + "1",
-      title: choice1
-
-    }
-
-    col.options.push(op1);
-    col.options.push(op2);
-    columnArray.push(col);
-  }
-
-  let actionInstance = {
-    title: title,
-    expiry: ActionSDK.Utils.getDefaultExpiry(7).getTime(),
-    columns: columnArray,
-    properties: []
-  };
-
-  actionInstance.rowsVisibility = ActionSDK.Visibility.All;
-
-  actionInstance.notificationSettings = [];
-  var notificationSettingsMode = ActionSDK.NotificationSettingMode.None;
-
-  actionInstance.notificationSettings.push({
-    mode: notificationSettingsMode,
-    time: 330
-  });
-
-  actionInstance.canUserAddMultipleRows = false;
-
-  actionInstance.isAnonymous = false;
-
-  return actionInstance;
-}
-
-function submitForm() {
-  var surveyTitle = (document.getElementById("surveyTitle")).value;
-  createQuestionArray();
-  sendActioninstance(surveyTitle, questions);
-}
-
 
 function createInputElement(ph, id) {
   var inputelement = document.createElement('input'); // Create Input Field for Name
@@ -194,7 +109,6 @@ function createInputElement(ph, id) {
 
 
 function addQuestion() {
-
 
   var qDiv = document.createElement("div");
   var linebreak = document.createElement('br');
@@ -223,10 +137,28 @@ function addQuestion() {
 
 
 function addChoice(ph, cc) {
-  var inputelement = document.createElement('input'); // Create Input Field for Name
+  var inputelement = document.createElement('input');
   inputelement.setAttribute("type", "text");
   inputelement.setAttribute("value", "");
   inputelement.setAttribute("id", cc);
   inputelement.placeholder = ph;
   return inputelement;
+}
+
+function generateGUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+  });
+}
+
+function submitFormNew() {
+  actionSDK.executeApi(new actionSDK.GetContext.Request())
+  .then(function (response) {
+      console.info("GetContext - Response: " + JSON.stringify(response));
+      createAction(response.context.actionPackageId);
+  })
+.catch(function (error) {
+    console.error("GetContext - Error: " + JSON.stringify(error));
+  });
 }
